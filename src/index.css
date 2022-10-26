@@ -1,13 +1,155 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+.lds-ripple {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+.lds-ripple div {
+    position: absolute;
+    border: 4px solid slategrey;
+    opacity: 1;
+    border-radius: 50%;
+    animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+    animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+    0% {
+        top: 36px;
+        left: 36px;
+        width: 0;
+        height: 0;
+        opacity: 0;
+    }
+    4.9% {
+        top: 36px;
+        left: 36px;
+        width: 0;
+        height: 0;
+        opacity: 0;
+    }
+    5% {
+        top: 36px;
+        left: 36px;
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+    100% {
+        top: 0px;
+        left: 0px;
+        width: 72px;
+        height: 72px;
+        opacity: 0;
+    }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.image-wrapper {
+    cursor: pointer !important;
+    position: relative;
+    transition: border-color 0.2s linear;
+}
+.image-wrapper:hover:not(.border-success) {
+    border-color: #ccc !important;
+}
+.image-wrapper.border-success::after {
+    content: "\2713";
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: -10px;
+    top: -10px;
+    background-color: green;
+    color: white;
+    opacity: 0;
+    animation-name: fadein;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+    animation-duration: 0.25s;
+}
+
+@keyframes fadein {
+    0% {
+        opacity: 0;
+        top: -25px;
+    }
+    50% {
+        opacity: 0.5;
+        top: -5px;
+    }
+    75% {
+        opacity: 0.75;
+        top: -15px;
+    }
+    100% {
+        opacity: 1;
+        top: -10px;
+    }
+}
+
+.imageloading {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: none;
+}
+
+textarea:focus,
+textarea.form-control:focus,
+input.form-control:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+[type="text"].form-control:focus,
+[type="password"].form-control:focus,
+[type="email"].form-control:focus,
+[type="tel"].form-control:focus,
+[contenteditable].form-control:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.paging-inp {
+    border: 1px solid white !important;
+    box-shadow: inset 5;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: textfield !important;
+}
+
+.paging-inp:hover {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: textfield !important;
+}
+
+.paging-inp:focus,
+.paging-inp:active {
+    border: 1px solid silver !important;
+    background: #f9f9f9;
+}
+.paging-btn {
+    width: 40px;
+    height: 40px;
+}
+.paging-btn svg {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    margin: 0;
 }
