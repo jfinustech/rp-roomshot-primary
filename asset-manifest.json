@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/rp-roomshot-primary/static/css/main.2ddb1e01.css",
+    "main.js": "/rp-roomshot-primary/static/js/main.5c3c5f40.js",
+    "static/media/loading.gif": "/rp-roomshot-primary/static/media/loading.a1a996746e5e48352c81.gif",
+    "index.html": "/rp-roomshot-primary/index.html",
+    "main.2ddb1e01.css.map": "/rp-roomshot-primary/static/css/main.2ddb1e01.css.map",
+    "main.5c3c5f40.js.map": "/rp-roomshot-primary/static/js/main.5c3c5f40.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2ddb1e01.css",
+    "static/js/main.5c3c5f40.js"
+  ]
+}
