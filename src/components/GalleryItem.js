@@ -100,74 +100,118 @@ function GalleryItem({ item, shapes }) {
     }, [updatedItemData]);
 
     return (
-        <div className="row g-2 g-sm-3 g-md-4">
-            {itemData?.map((d, i) => (
-                <div className="col-12 col-sm-6" key={i}>
-                    <div
-                        className={`image-wrapper w-100 h-100 border rounded-1 border-1 ${
-                            d.primary
-                                ? "border-success bg-success-light"
-                                : "border-secondary"
-                        }`}
-                    >
-                        <div className="row">
-                            <div className="col-6">
-                                <div
-                                    className="bg-white position-relative d-flex justify-content-center align-items-center flex-column rounded p-2 overflow-hidden"
-                                    style={{
-                                        width: "90%",
-                                        height: "90%",
-                                        marginLeft: "5%",
-                                        marginTop: "5%",
-                                    }}
-                                >
-                                    <div
-                                        className="imageloading"
-                                        style={{
-                                            backgroundImage: `url(${loadinggif})`,
-                                        }}
-                                    ></div>
-                                    <img
-                                        src={d.image}
-                                        className="img-fluid"
-                                        alt={`${Math.random()}`}
-                                    />
+        <div className="row g-5">
+            <div className="col-3">
+                <div className="d-sticky sticky-top" style={{ top: 30 }}>
+                    <h5>Selected Images</h5>
+
+                    {itemData?.filter((z) => z.primary).length === 0 && (
+                        <small className="text-secondary">
+                            Nothing Selected
+                        </small>
+                    )}
+
+                    {itemData
+                        ?.filter((z) => z.primary)
+                        .map((primg, i) => (
+                            <div
+                                className="d-block p-3 border-bottom"
+                                key={i * 5651}
+                            >
+                                <div className="row align-items-center">
+                                    <div className="col-5">
+                                        <img
+                                            src={primg.image}
+                                            alt={primg.shape}
+                                            className="img-fluid"
+                                        />
+                                    </div>
+                                    <div className="col-7">
+                                        <small className="text-secondary">
+                                            {primg.shape}
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="col-6">
-                                <div className="d-flex flex-column gap-2 p-2 gap-md-3 p-md-3 inputwrapper">
-                                    {shapeList.map((sh) => (
-                                        <div className="w-100" key={sh.id + i}>
-                                            <button
-                                                className={`btn btn-sm w-100 ${
-                                                    d.shape === sh.shape
-                                                        ? "btn-success"
-                                                        : "btn-outline-secondary"
-                                                }`}
-                                                onClick={(e) => handleClick(e)}
-                                                data-shape={sh.shape}
-                                                data-isprimary={
-                                                    d.shape === sh.shape
-                                                        ? "1"
-                                                        : "0"
-                                                }
-                                            >
-                                                {sh.shape}
-                                            </button>
+                        ))}
+                </div>
+            </div>
+            <div className="col-9">
+                <div className="row g-2 g-sm-3 g-md-4">
+                    {itemData?.map((d, i) => (
+                        <div className="col-12 col-sm-6" key={i}>
+                            <div
+                                className={`image-wrapper w-100 h-100 border rounded-1 border-1 ${
+                                    d.primary
+                                        ? "border-success bg-success-light"
+                                        : "border-secondary"
+                                }`}
+                            >
+                                <div className="row">
+                                    <div className="col-6">
+                                        <div
+                                            className="bg-white position-relative d-flex justify-content-center align-items-center flex-column rounded p-2 overflow-hidden"
+                                            style={{
+                                                width: "90%",
+                                                height: "90%",
+                                                marginLeft: "5%",
+                                                marginTop: "5%",
+                                            }}
+                                        >
+                                            <div
+                                                className="imageloading"
+                                                style={{
+                                                    backgroundImage: `url(${loadinggif})`,
+                                                }}
+                                            ></div>
+                                            <img
+                                                src={d.image}
+                                                className="img-fluid"
+                                                alt={`${Math.random()}`}
+                                            />
                                         </div>
-                                    ))}
-                                    <input
-                                        className="varinput"
-                                        type="hidden"
-                                        ref={inputData}
-                                        value={d.image}
-                                    />
+                                    </div>
+                                    <div className="col-6">
+                                        <div className="d-flex flex-column gap-2 p-2 gap-md-3 p-md-3 inputwrapper">
+                                            {shapeList.map((sh) => (
+                                                <div
+                                                    className="w-100"
+                                                    key={sh.id + i}
+                                                >
+                                                    <button
+                                                        className={`btn btn-sm w-100 ${
+                                                            d.shape === sh.shape
+                                                                ? "btn-success"
+                                                                : "btn-outline-secondary"
+                                                        }`}
+                                                        onClick={(e) =>
+                                                            handleClick(e)
+                                                        }
+                                                        data-shape={sh.shape}
+                                                        data-isprimary={
+                                                            d.shape === sh.shape
+                                                                ? "1"
+                                                                : "0"
+                                                        }
+                                                    >
+                                                        {sh.shape}
+                                                    </button>
+                                                </div>
+                                            ))}
+                                            <input
+                                                className="varinput"
+                                                type="hidden"
+                                                ref={inputData}
+                                                value={d.image}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    ))}
                 </div>
-            ))}
+            </div>
         </div>
     );
 }
