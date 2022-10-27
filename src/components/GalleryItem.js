@@ -100,10 +100,10 @@ function GalleryItem({ item, shapes }) {
     }, [updatedItemData]);
 
     return (
-        <div className="row g-5">
-            <div className="col-3">
+        <div className="row g-md-5">
+            <div className="col-12 col-md-3 mb-5">
                 <div className="d-sticky sticky-top" style={{ top: 30 }}>
-                    <h5>Selected Images</h5>
+                    <h6>Selected Images</h6>
 
                     {itemData?.filter((z) => z.primary).length === 0 && (
                         <small className="text-secondary">
@@ -119,14 +119,14 @@ function GalleryItem({ item, shapes }) {
                                 key={i * 5651}
                             >
                                 <div className="row align-items-center">
-                                    <div className="col-5">
+                                    <div className="col-3 col-md-5">
                                         <img
                                             src={primg.image}
                                             alt={primg.shape}
                                             className="img-fluid"
                                         />
                                     </div>
-                                    <div className="col-7">
+                                    <div className="col-9 col-md-7">
                                         <small className="text-secondary">
                                             {primg.shape}
                                         </small>
@@ -136,7 +136,7 @@ function GalleryItem({ item, shapes }) {
                         ))}
                 </div>
             </div>
-            <div className="col-9">
+            <div className="col-12 col-md-9">
                 <div className="row g-2 g-sm-3 g-md-4">
                     {itemData?.map((d, i) => (
                         <div className="col-12 col-sm-6" key={i}>

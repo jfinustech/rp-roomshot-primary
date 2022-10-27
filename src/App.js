@@ -14,6 +14,7 @@ function App() {
     const [errors, setErrors] = useState("");
 
     const [searchParams, setSearchParams] = useSearchParams();
+    const [search, setSearch] = useState(searchParams.get("search") ?? "");
 
     const handleQuery = (q) => {
         const new_query = {
@@ -46,19 +47,24 @@ function App() {
         };
 
         fetch();
+
+        setSearch(searchParams.get("search") ?? "");
     }, [searchParams]);
 
     return (
         <>
             <Navbar />
+            <Search
+                searchParams={searchParams}
+                setSearchParams={setSearchParams}
+                search={search}
+                setSearch={setSearch}
+                loading={loading}
+            />
             <Loading loading={loading} />
             {!loading && errors !== "" && <Errors errors={errors} />}
             {!loading && errors === "" && (
                 <>
-                    <Search
-                        searchParams={searchParams}
-                        setSearchParams={setSearchParams}
-                    />
                     <Gallery gallery={gallery} />
                     <Pagination
                         current_page={searchParams.get("page") ?? 1}

@@ -159,3 +159,8 @@ input[type="number"]:focus,
 .btn-outline-secondary {
     background-color: white;
 }
+
+.mainsearch:disabled {
+    background: #f9f9f9;
+    color: slategray;
+}

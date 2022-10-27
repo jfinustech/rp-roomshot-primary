@@ -20,11 +20,15 @@ function Gallery({ gallery }) {
             <div className="row">
                 {collection.map((item) => (
                     <div className="col-12 mb-5" key={item.key}>
-                        <div className="p-5 border">
+                        <div className="p-3 p-md-5 border rounded">
                             <div className="d-flex justify-content-start flex-column mb-5">
                                 <h5>Collection: {item.collectionName}</h5>
-                                <span>DesignID: {item.designID}</span>
-                                <span>Color: {item.designColor}</span>
+                                <span className="text-secondary">
+                                    DesignID: {item.designID}
+                                </span>
+                                <span className="text-secondary">
+                                    Color: {item.designColor}
+                                </span>
                             </div>
                             <GalleryItem
                                 item={item.images}

@@ -1,7 +1,11 @@
-import { useState } from "react";
-import { BiSearch, BiTrash } from "react-icons/bi";
-function Search({ searchParams, setSearchParams }) {
-    const [search, setSearch] = useState(searchParams.get("search") ?? "");
+import { BiSearch, BiTrash, BiLoader } from "react-icons/bi";
+function Search({ searchParams, setSearchParams, search, setSearch, loading }) {
+    const handleInnitSearch = (e) => {
+        e.preventDefault();
+        if (search) {
+            setSearchParams({ search });
+        }
+    };
 
     return (
         <div className="container-fluid container-lg mb-4">
@@ -11,23 +15,21 @@ function Search({ searchParams, setSearchParams }) {
                         <input
                             type="text"
                             name="search"
-                            className="form-control border-secondary"
+                            className="form-control border-secondary mainsearch"
                             placeholder="Search..."
                             aria-label="Recipient's username"
                             aria-describedby="button-addon2"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
+                            disabled={loading}
                         />
                         <button
                             className="btn btn-outline-secondary border-secondary"
                             type="button"
                             id="button-addon2"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setSearchParams({ search });
-                            }}
+                            onClick={(e) => handleInnitSearch(e)}
                         >
-                            <BiSearch />
+                            {loading ? <BiLoader /> : <BiSearch />}
                         </button>
                     </div>
                 </form>
