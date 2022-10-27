@@ -32,17 +32,33 @@ function GalleryItem({ item, shapes }) {
     const [updatedItemData, setUpdatedItemData] = useState([]);
     const inputData = useRef();
 
-    const handleClick = async (e) => {
-        const shapeValue = e.target.dataset.shape;
-        const primaryValue = e.target.dataset.isprimary;
-        const imageValue = e.target
-            .closest(".inputwrapper")
-            .querySelector("input.varinput").value;
-        const loadingContainer = e.target
-            .closest(".image-wrapper")
-            .querySelector(".imageloading");
+    const handleClick = async (
+        e,
+        e_shpe_val = "",
+        e_primary_val = "",
+        e_image_val = ""
+    ) => {
+        const shapeValue =
+            e_shpe_val === "" ? e.target.dataset.shape : e_shpe_val;
+        const primaryValue =
+            e_primary_val === "" ? e.target.dataset.isprimary : e_primary_val;
+        const imageValue =
+            e_image_val === ""
+                ? e.target
+                      .closest(".inputwrapper")
+                      .querySelector("input.varinput").value
+                : e_image_val;
+        const loadingContainer =
+            e?.target
+                ?.closest(".image-wrapper")
+                ?.querySelector(".imageloading") ?? "";
 
-        loadingContainer.style.display = "block";
+        // console.log("shape:", shapeValue);
+        // console.log("primary:", primaryValue);
+        // console.log("image:", imageValue);
+        // return;
+
+        if (loadingContainer !== "") loadingContainer.style.display = "block";
 
         const url = "https://sandbx.rugpal.com/office/jay/f.asp";
 
@@ -83,7 +99,9 @@ function GalleryItem({ item, shapes }) {
                 alert(er);
             })
             .finally(() => {
-                loadingContainer.removeAttribute("style");
+                // loadingContainer.removeAttribute("style");
+                if (loadingContainer !== "")
+                    loadingContainer.removeAttribute("style");
             });
     };
 
@@ -115,9 +133,15 @@ function GalleryItem({ item, shapes }) {
                         ?.filter((z) => z.primary)
                         .map((primg, i) => (
                             <div
-                                className="d-block p-3 border-bottom"
+                                className="d-block py-3 border-bottom image-wrapper"
                                 key={i * 5651}
                             >
+                                <div
+                                    className="imageloading"
+                                    style={{
+                                        backgroundImage: `url(${loadinggif})`,
+                                    }}
+                                ></div>
                                 <div className="row align-items-center">
                                     <div className="col-3 col-md-5">
                                         <img
@@ -130,6 +154,21 @@ function GalleryItem({ item, shapes }) {
                                         <small className="text-secondary">
                                             {primg.shape}
                                         </small>
+                                        <div className="d-flex w-100 pt-2">
+                                            <button
+                                                className="btn btn-sm btn-outline-danger"
+                                                onClick={(e) =>
+                                                    handleClick(
+                                                        e,
+                                                        primg.shape,
+                                                        primg.primary ? "1" : 0,
+                                                        primg.image
+                                                    )
+                                                }
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
