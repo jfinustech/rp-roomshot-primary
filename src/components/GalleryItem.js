@@ -2,6 +2,16 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import loadinggif from "../assets/loading.gif";
 
+const setShapes = (shapestring) => {
+    if (!shapestring || shapestring === "") return [];
+    const shapeArray = [];
+    shapestring.split(",").map((shape) => {
+        const splitshape = shape.split("|");
+        return shapeArray.push({ id: splitshape[1], shape: splitshape[0] });
+    });
+    return shapeArray;
+};
+
 const splitImages = (image) => {
     if (image === "") return [];
     const images = image.split(",");
@@ -9,59 +19,79 @@ const splitImages = (image) => {
     images.map((img) => {
         const link = img.split("|")[0];
         const primary = img.split("|")[1] === "0" ? false : true;
-        return result.push({ image: link, primary });
+        const shape = img.split("|")[2];
+        return result.push({ image: link, primary, shape });
     });
 
     return result;
 };
 
-function GalleryItem({ item }) {
+function GalleryItem({ item, shapes }) {
     const [itemData, setItemData] = useState();
+    const [shapeList, setShapeList] = useState();
     const [updatedItemData, setUpdatedItemData] = useState([]);
-    const [loading, setLoading] = useState();
-
     const inputData = useRef();
 
     const handleClick = async (e) => {
-        // console.log(e);
-        setLoading(true);
-        const target = e.currentTarget;
-        const value = target.querySelector("input").value;
+        const shapeValue = e.target.dataset.shape;
+        const primaryValue = e.target.dataset.isprimary;
+        const imageValue = e.target
+            .closest(".inputwrapper")
+            .querySelector("input.varinput").value;
+        const loadingContainer = e.target
+            .closest(".image-wrapper")
+            .querySelector(".imageloading");
+
+        loadingContainer.style.display = "block";
+
         const url = "https://sandbx.rugpal.com/office/jay/f.asp";
-        const loadingcontainer =
-            target.children[0].querySelector(".imageloading");
-        loadingcontainer.style.display = "block";
+
         await axios
             .get(url, {
-                params: { img: encodeURIComponent(value) },
+                params: {
+                    img: encodeURIComponent(imageValue),
+                    shape: encodeURIComponent(shapeValue),
+                    primary: encodeURIComponent(primaryValue),
+                },
             })
             .then((d) => {
                 switch (d.data.message) {
-                    case "updated":
-                        const prevdata = splitImages(item);
-                        prevdata.map((z) => (z.primary = false));
-                        prevdata.filter((zz) =>
-                            zz.image === value ? (zz.primary = true) : false
-                        );
-                        setUpdatedItemData(prevdata);
+                    case "does not exist":
+                        alert(d.data.message);
+                        break;
+                    case "update failed":
+                        alert(d.data.message);
                         break;
                     default:
-                        alert(d.data.message);
+                        const newImageArray = [];
+                        itemData.map((img) => {
+                            if (img.image === d.data.image) {
+                                return newImageArray.push({
+                                    image: d.data.image,
+                                    primary:
+                                        d.data.primary === "0" ? false : true,
+                                    shape: d.data.shape,
+                                });
+                            }
+                            return newImageArray.push(img);
+                        });
+
+                        setUpdatedItemData(newImageArray);
                 }
             })
             .catch((er) => {
                 alert(er);
             })
             .finally(() => {
-                setLoading(false);
-                loadingcontainer.removeAttribute("style");
+                loadingContainer.removeAttribute("style");
             });
     };
 
     useEffect(() => {
         const imageInfo = splitImages(item);
+        setShapeList(setShapes(shapes));
         setItemData(imageInfo);
-    }, [item]);
+    }, [item, shapes]);
 
     useEffect(() => {
         if (updatedItemData.length > 0) {
@@ -70,33 +100,70 @@ function GalleryItem({ item }) {
     }, [updatedItemData]);
 
     return (
-        <div className="row g-3">
+        <div className="row g-2 g-sm-3 g-md-4">
             {itemData?.map((d, i) => (
-                <div className="col-6 col-md-4 col-lg-3" key={i}>
+                <div className="col-12 col-sm-6" key={i}>
                     <div
-                        className={`image-wrapper d-flex justify-content-center align-items-center w-100 h-100 border border-2 ${
-                            d.primary ? "border-success " : "border-light"
+                        className={`image-wrapper w-100 h-100 border rounded-1 border-1 ${
+                            d.primary
+                                ? "border-success bg-success-light"
+                                : "border-secondary"
                         }`}
-                        onClick={(e) => handleClick(e)}
                     >
-                        <div className="p-3 position-relative">
-                            <div
-                                className="imageloading"
-                                style={{
-                                    backgroundImage: `url(${loadinggif})`,
-                                }}
-                            ></div>
-                            <img
-                                src={d.image}
-                                className="img-fluid"
-                                alt={`${Math.random()}`}
-                            />
-                            <input
-                                className="varinput"
-                                type="hidden"
-                                ref={inputData}
-                                value={d.image}
-                            />
+                        <div className="row">
+                            <div className="col-6">
+                                <div
+                                    className="bg-white position-relative d-flex justify-content-center align-items-center flex-column rounded p-2 overflow-hidden"
+                                    style={{
+                                        width: "90%",
+                                        height: "90%",
+                                        marginLeft: "5%",
+                                        marginTop: "5%",
+                                    }}
+                                >
+                                    <div
+                                        className="imageloading"
+                                        style={{
+                                            backgroundImage: `url(${loadinggif})`,
+                                        }}
+                                    ></div>
+                                    <img
+                                        src={d.image}
+                                        className="img-fluid"
+                                        alt={`${Math.random()}`}
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-6">
+                                <div className="d-flex flex-column gap-2 p-2 gap-md-3 p-md-3 inputwrapper">
+                                    {shapeList.map((sh) => (
+                                        <div className="w-100" key={sh.id + i}>
+                                            <button
+                                                className={`btn btn-sm w-100 ${
+                                                    d.shape === sh.shape
+                                                        ? "btn-success"
+                                                        : "btn-outline-secondary"
+                                                }`}
+                                                onClick={(e) => handleClick(e)}
+                                                data-shape={sh.shape}
+                                                data-isprimary={
+                                                    d.shape === sh.shape
+                                                        ? "1"
+                                                        : "0"
+                                                }
+                                            >
+                                                {sh.shape}
+                                            </button>
+                                        </div>
+                                    ))}
+                                    <input
+                                        className="varinput"
+                                        type="hidden"
+                                        ref={inputData}
+                                        value={d.image}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

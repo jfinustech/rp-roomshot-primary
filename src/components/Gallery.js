@@ -26,7 +26,10 @@ function Gallery({ gallery }) {
                                 <span>DesignID: {item.designID}</span>
                                 <span>Color: {item.designColor}</span>
                             </div>
-                            <GalleryItem item={item.images} />
+                            <GalleryItem
+                                item={item.images}
+                                shapes={item.shapes}
+                            />
                         </div>
                     </div>
                 ))}
