@@ -66,11 +66,13 @@ function App() {
             {!loading && errors === "" && (
                 <>
                     <Gallery gallery={gallery} />
-                    <Pagination
-                        current_page={searchParams.get("page") ?? 1}
-                        maxpage={gallery ? gallery[0].total_page : 1}
-                        handleQuery={handleQuery}
-                    />
+                    {gallery && gallery.length > 0 && (
+                        <Pagination
+                            current_page={searchParams.get("page") ?? 1}
+                            maxpage={gallery ? gallery[0].total_page : 1}
+                            handleQuery={handleQuery}
+                        />
+                    )}
                 </>
             )}
         </>

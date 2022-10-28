@@ -53,11 +53,6 @@ function GalleryItem({ item, shapes }) {
                 ?.closest(".image-wrapper")
                 ?.querySelector(".imageloading") ?? "";
 
-        // console.log("shape:", shapeValue);
-        // console.log("primary:", primaryValue);
-        // console.log("image:", imageValue);
-        // return;
-
         if (loadingContainer !== "") loadingContainer.style.display = "block";
 
         const url = "https://sandbx.rugpal.com/office/jay/f.asp";

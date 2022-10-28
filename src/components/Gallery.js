@@ -1,14 +1,25 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import GalleryItem from "./GalleryItem";
 function Gallery({ gallery }) {
     const [collection] = useState(gallery);
+    const [searchParams] = useSearchParams();
 
     if (!collection || collection.lenght === 0) {
         return (
             <div className="container-fluid container-lg">
                 <div className="row">
                     <div className="col-12">
-                        <div className="alert alert-info">No Data Found!</div>
+                        <div className="alert alert-info">
+                            {searchParams?.get("search") ? (
+                                <>
+                                    No Record Found for{" "}
+                                    <b>{searchParams?.get("search")}</b>!
+                                </>
+                            ) : (
+                                <>No Data Found!</>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
