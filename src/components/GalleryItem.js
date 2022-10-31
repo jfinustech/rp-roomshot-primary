@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import loadinggif from "../assets/loading.gif";
+import { md } from "../aux/modal";
+import placeholder from "../assets/placeholder_lg.jpg";
 
 const setShapes = (shapestring) => {
     if (!shapestring || shapestring === "") return [];
@@ -36,22 +38,18 @@ function GalleryItem({ item, shapes, handleCollapse }) {
     const handleClick = async (
         e,
         e_shpe_val = "",
-        e_primary_val = "",
-        e_deleted_val = "",
-        e_image_val = ""
+        e_image_val = "",
+        e_fn_val = ""
     ) => {
         const shapeValue =
             e_shpe_val === "" ? e.target.dataset.shape : e_shpe_val;
-        const primaryValue =
-            e_primary_val === "" ? e.target.dataset.isprimary : e_primary_val;
-        const deletedValue =
-            e_deleted_val === "" ? e.target.dataset.deleted : e_primary_val;
         const imageValue =
             e_image_val === ""
                 ? e.target
                       .closest(".inputwrapper")
                       .querySelector("input.varinput").value
                 : e_image_val;
+        const fnValue = e_fn_val === "" ? e.target.dataset.fn : e_fn_val;
         const loadingContainer =
             e?.target
                 ?.closest(".image-wrapper")
@@ -65,36 +63,28 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                 params: {
                     img: encodeURIComponent(imageValue),
                     shape: encodeURIComponent(shapeValue),
-                    primary: encodeURIComponent(primaryValue),
-                    deleted: encodeURIComponent(deletedValue),
+                    fn: encodeURIComponent(fnValue),
                 },
             })
             .then((d) => {
-                switch (d.data.message) {
-                    case "does not exist":
-                        alert(d.data.message);
-                        break;
-                    case "update failed":
-                        alert(d.data.message);
-                        break;
-                    default:
-                        const newImageArray = [];
-                        itemData.map((img) => {
-                            if (img.image === d.data.image) {
-                                return newImageArray.push({
-                                    image: d.data.image,
-                                    primary:
-                                        d.data.primary === "0" ? false : true,
-                                    shape: d.data.shape,
-                                    deleted:
-                                        d.data.deleted === "0" ? true : false,
-                                });
-                            }
-                            return newImageArray.push(img);
-                        });
-
-                        setUpdatedItemData(newImageArray);
+                if (d.data?.hasOwnProperty("message")) {
+                    return alert(d.data.message);
                 }
+
+                const newImageArray = [];
+                itemData.map((img) => {
+                    if (img.image === d.data.image) {
+                        return newImageArray.push({
+                            image: d.data.image,
+                            primary: d.data.primary === "0" ? false : true,
+                            shape: d.data.shape,
+                            deleted: d.data.deleted === "0" ? true : false,
+                        });
+                    }
+                    return newImageArray.push(img);
+                });
+
+                setUpdatedItemData(newImageArray);
             })
             .catch((er) => {
                 alert(er);
@@ -198,7 +188,19 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                     </div>
                                     <div className="col-9 col-md-7">
                                         <small className="text-secondary">
-                                            {primg.shape}
+                                            {primg.shape === "" ? (
+                                                <span
+                                                    className="text-danger"
+                                                    style={{
+                                                        backgroundColor:
+                                                            "yellow",
+                                                    }}
+                                                >
+                                                    Shape?
+                                                </span>
+                                            ) : (
+                                                primg.shape
+                                            )}
                                         </small>
                                         <div className="d-flex w-100 pt-2">
                                             <button
@@ -207,13 +209,8 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                                     handleClick(
                                                         e,
                                                         primg.shape,
-                                                        primg.primary
-                                                            ? "1"
-                                                            : "0",
-                                                        primg.deleted
-                                                            ? "0"
-                                                            : "1",
-                                                        primg.image
+                                                        primg.image,
+                                                        "primary"
                                                     )
                                                 }
                                             >
@@ -239,10 +236,15 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                         <div className="col-12 col-sm-6" key={i}>
                             <div
                                 className={`image-wrapper w-100 h-100 border rounded-1 border-1 ${
-                                    d.primary
-                                        ? "border-success bg-success-light"
+                                    d.shape !== ""
+                                        ? d.primary
+                                            ? "border-info bg-info-light"
+                                            : "border-success bg-success-light"
+                                        : d.primary
+                                        ? "border-info bg-info-light"
                                         : "border-secondary"
-                                } ${d.deleted ? "item_deleted" : ""}`}
+                                } 
+                                ${d.deleted ? "item_deleted" : ""}`}
                             >
                                 <div className="row">
                                     <div className="col-6">
@@ -265,11 +267,30 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                                 src={d.image}
                                                 className="img-fluid"
                                                 alt={`${Math.random()}`}
+                                                onClick={() =>
+                                                    md(
+                                                        !d.image
+                                                            ? placeholder
+                                                            : d.image
+                                                    )
+                                                }
                                             />
                                         </div>
                                     </div>
                                     <div className="col-6">
                                         <div className="d-flex flex-column gap-2 p-2 gap-md-3 p-md-3 inputwrapper">
+                                            <button
+                                                onClick={(e) => handleClick(e)}
+                                                data-fn="primary"
+                                                className={`btnfunc btn btn-sm ${
+                                                    d.primary
+                                                        ? "btn-info"
+                                                        : "btn-outline-info"
+                                                }`}
+                                                disabled={d.deleted}
+                                            >
+                                                Primary
+                                            </button>
                                             {shapeList.map((sh) => (
                                                 <div
                                                     className="w-100"
@@ -286,16 +307,7 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                                             handleClick(e)
                                                         }
                                                         data-shape={sh.shape}
-                                                        data-deleted={
-                                                            sh.deleted
-                                                                ? "0"
-                                                                : "1"
-                                                        }
-                                                        data-isprimary={
-                                                            d.shape === sh.shape
-                                                                ? "1"
-                                                                : "0"
-                                                        }
+                                                        data-fn="update"
                                                     >
                                                         {sh.shape}
                                                     </button>

@@ -65,7 +65,28 @@
     position: absolute;
     left: -10px;
     top: -10px;
-    background-color: green;
+    background-color: white;
+    color: green;
+    border: 1px solid green;
+    opacity: 0;
+    animation-name: fadein;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+    animation-duration: 0.25s;
+}
+.image-wrapper.border-info::after {
+    content: "\2713";
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: -10px;
+    top: -10px;
+    background-color: #0dcaf0;
     color: white;
     opacity: 0;
     animation-name: fadein;
@@ -153,11 +174,20 @@ input[type="number"]:focus,
     margin: 0;
 }
 
+.bg-info-light {
+    background-color: #fafeff;
+}
 .bg-success-light {
     background-color: #f9fffd;
 }
-.btn-outline-secondary {
+/* .btn-outline-secondary,
+.btn-outline-info,
+.btn-outline-danger {
     background-color: white;
+} */
+
+.btn-info {
+    color: white !important;
 }
 
 .mainsearch:disabled {
