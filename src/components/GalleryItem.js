@@ -308,7 +308,7 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                                     }
                                                     className="btn btn-outline-success btn-sm"
                                                 >
-                                                    Reverse
+                                                    Revert
                                                 </button>
                                             ) : (
                                                 <button
