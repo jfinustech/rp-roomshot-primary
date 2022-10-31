@@ -20,7 +20,8 @@ const splitImages = (image) => {
         const link = img.split("|")[0];
         const primary = img.split("|")[1] === "0" ? false : true;
         const shape = img.split("|")[2];
-        return result.push({ image: link, primary, shape });
+        const deleted = img.split("|")[3] === "0" ? true : false;
+        return result.push({ image: link, primary, shape, deleted });
     });
 
     return result;
@@ -36,12 +37,15 @@ function GalleryItem({ item, shapes, handleCollapse }) {
         e,
         e_shpe_val = "",
         e_primary_val = "",
+        e_deleted_val = "",
         e_image_val = ""
     ) => {
         const shapeValue =
             e_shpe_val === "" ? e.target.dataset.shape : e_shpe_val;
         const primaryValue =
             e_primary_val === "" ? e.target.dataset.isprimary : e_primary_val;
+        const deletedValue =
+            e_deleted_val === "" ? e.target.dataset.deleted : e_primary_val;
         const imageValue =
             e_image_val === ""
                 ? e.target
@@ -54,7 +58,6 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                 ?.querySelector(".imageloading") ?? "";
 
         if (loadingContainer !== "") loadingContainer.style.display = "block";
-
         const url = "https://sandbx.rugpal.com/office/jay/f.asp";
 
         await axios
@@ -63,6 +66,7 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                     img: encodeURIComponent(imageValue),
                     shape: encodeURIComponent(shapeValue),
                     primary: encodeURIComponent(primaryValue),
+                    deleted: encodeURIComponent(deletedValue),
                 },
             })
             .then((d) => {
@@ -82,6 +86,8 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                     primary:
                                         d.data.primary === "0" ? false : true,
                                     shape: d.data.shape,
+                                    deleted:
+                                        d.data.deleted === "0" ? true : false,
                                 });
                             }
                             return newImageArray.push(img);
@@ -97,6 +103,51 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                 // loadingContainer.removeAttribute("style");
                 if (loadingContainer !== "")
                     loadingContainer.removeAttribute("style");
+            });
+    };
+
+    const handleDelete = async (e) => {
+        const imageValue = e.target
+            .closest(".inputwrapper")
+            .querySelector("input.varinput").value;
+
+        const url = "https://sandbx.rugpal.com/office/jay/g.asp";
+
+        await axios
+            .get(url, {
+                params: {
+                    img: encodeURIComponent(imageValue),
+                },
+            })
+            .then((d) => {
+                switch (d.data.message) {
+                    case "Invalid inquery":
+                        alert(d.data.message);
+                        break;
+                    case "update failed":
+                        alert(d.data.message);
+                        break;
+                    default:
+                        const newImageArray = [];
+                        itemData.map((img) => {
+                            if (img.image === d.data.image) {
+                                return newImageArray.push({
+                                    image: d.data.image,
+                                    primary:
+                                        d.data.primary === "0" ? false : true,
+                                    shape: d.data.shape,
+                                    deleted:
+                                        d.data.deleted === "0" ? true : false,
+                                });
+                            }
+                            return newImageArray.push(img);
+                        });
+
+                        setUpdatedItemData(newImageArray);
+                }
+            })
+            .catch((er) => {
+                alert(er);
             });
     };
 
@@ -156,7 +207,12 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                                     handleClick(
                                                         e,
                                                         primg.shape,
-                                                        primg.primary ? "1" : 0,
+                                                        primg.primary
+                                                            ? "1"
+                                                            : "0",
+                                                        primg.deleted
+                                                            ? "0"
+                                                            : "1",
                                                         primg.image
                                                     )
                                                 }
@@ -186,7 +242,7 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                     d.primary
                                         ? "border-success bg-success-light"
                                         : "border-secondary"
-                                }`}
+                                } ${d.deleted ? "item_deleted" : ""}`}
                             >
                                 <div className="row">
                                     <div className="col-6">
@@ -220,7 +276,8 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                                     key={sh.id + i}
                                                 >
                                                     <button
-                                                        className={`btn btn-sm w-100 ${
+                                                        disabled={d.deleted}
+                                                        className={`btnfunc btn btn-sm w-100 ${
                                                             d.shape === sh.shape
                                                                 ? "btn-success"
                                                                 : "btn-outline-secondary"
@@ -229,6 +286,11 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                                             handleClick(e)
                                                         }
                                                         data-shape={sh.shape}
+                                                        data-deleted={
+                                                            sh.deleted
+                                                                ? "0"
+                                                                : "1"
+                                                        }
                                                         data-isprimary={
                                                             d.shape === sh.shape
                                                                 ? "1"
@@ -239,6 +301,25 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                                     </button>
                                                 </div>
                                             ))}
+                                            {d.deleted ? (
+                                                <button
+                                                    onClick={(e) =>
+                                                        handleDelete(e)
+                                                    }
+                                                    className="btn btn-outline-success btn-sm"
+                                                >
+                                                    Reverse
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={(e) =>
+                                                        handleDelete(e)
+                                                    }
+                                                    className="btn btn-outline-danger btn-sm"
+                                                >
+                                                    Delete
+                                                </button>
+                                            )}
                                             <input
                                                 className="varinput"
                                                 type="hidden"
@@ -248,6 +329,17 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                         </div>
                                     </div>
                                 </div>
+                                {/* <div className="border-top p-2 mt-2 w-100 d-flex">
+                                    {d.deleted ? (
+                                        <button className="btn btn-outline-danger btn-sm">
+                                            Reverse
+                                        </button>
+                                    ) : (
+                                        <button className="btn btn-outline-danger btn-sm">
+                                            Delete
+                                        </button>
+                                    )}
+                                </div> */}
                             </div>
                         </div>
                     ))}
