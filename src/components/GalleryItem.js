@@ -26,7 +26,7 @@ const splitImages = (image) => {
     return result;
 };
 
-function GalleryItem({ item, shapes }) {
+function GalleryItem({ item, shapes, handleCollapse }) {
     const [itemData, setItemData] = useState();
     const [shapeList, setShapeList] = useState();
     const [updatedItemData, setUpdatedItemData] = useState([]);
@@ -113,7 +113,7 @@ function GalleryItem({ item, shapes }) {
     }, [updatedItemData]);
 
     return (
-        <div className="row g-md-5">
+        <div className="row g-md-5 thumb_item_wrapper">
             <div className="col-12 col-md-3 mb-5">
                 <div className="d-sticky sticky-top" style={{ top: 30 }}>
                     <h6>Selected Images</h6>
@@ -168,6 +168,13 @@ function GalleryItem({ item, shapes }) {
                                 </div>
                             </div>
                         ))}
+
+                    <button
+                        className="btn btn-outline-secondary btn-sm w-100 mt-5"
+                        onClick={(e) => handleCollapse(e)}
+                    >
+                        Collaps
+                    </button>
                 </div>
             </div>
             <div className="col-12 col-md-9">

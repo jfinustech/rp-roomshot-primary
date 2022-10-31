@@ -164,3 +164,16 @@ input[type="number"]:focus,
     background: #f9f9f9;
     color: slategray;
 }
+
+.do_collapse .rounded {
+    background-color: #f9f9f9;
+}
+
+.thumb_item_wrapper {
+    transition: max-height 0.5s ease-in-out;
+}
+
+.do_collapse .thumb_item_wrapper {
+    max-height: 0;
+    overflow: hidden;
+}
