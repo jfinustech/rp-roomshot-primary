@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { BiTrash } from "react-icons/bi";
+
 import axios from "axios";
 import loadinggif from "../assets/loading.gif";
 import { md } from "../aux/modal";
@@ -27,6 +29,16 @@ const splitImages = (image) => {
     });
 
     return result;
+};
+
+const goToImage = (image) => {
+    if (image === "" || !image) return;
+    const imageContainer = document.querySelector(`[data-image="${image}"]`);
+    imageContainer.classList.add("shadow");
+    imageContainer.scrollIntoView();
+    setTimeout(() => {
+        imageContainer.classList.remove("shadow");
+    }, 3000);
 };
 
 function GalleryItem({ item, shapes, handleCollapse }) {
@@ -155,13 +167,16 @@ function GalleryItem({ item, shapes, handleCollapse }) {
 
     return (
         <div className="row g-md-5 thumb_item_wrapper">
-            <div className="col-12 col-md-3 mb-5">
+            <div className="col-12 col-md-2 mb-5">
                 <div className="d-sticky sticky-top" style={{ top: 30 }}>
-                    <h6>Selected Images</h6>
+                    <h6 className="mb-4">Primary Images</h6>
 
                     {itemData?.filter((z) => z.primary).length === 0 && (
-                        <small className="text-secondary">
-                            Nothing Selected
+                        <small
+                            className="text-secondary d-block"
+                            style={{ fontSize: "80%" }}
+                        >
+                            Nothing selected yet.
                         </small>
                     )}
 
@@ -169,7 +184,7 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                         ?.filter((z) => z.primary)
                         .map((primg, i) => (
                             <div
-                                className="d-block py-3 border-bottom image-wrapper"
+                                className="d-block pb-3 mb-3 border-bottom image-wrapper"
                                 key={i * 5651}
                             >
                                 <div
@@ -184,6 +199,9 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                             src={primg.image}
                                             alt={primg.shape}
                                             className="img-fluid"
+                                            onClick={() =>
+                                                goToImage(primg.image)
+                                            }
                                         />
                                     </div>
                                     <div className="col-9 col-md-7">
@@ -204,7 +222,7 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                         </small>
                                         <div className="d-flex w-100 pt-2">
                                             <button
-                                                className="btn btn-sm btn-outline-danger"
+                                                className="btn  btn-sm btn-outline-danger py-1 px-2 m-0 trash-btn d-flex justify-content-center align-items-center"
                                                 onClick={(e) =>
                                                     handleClick(
                                                         e,
@@ -214,7 +232,13 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                                     )
                                                 }
                                             >
-                                                Remove
+                                                <BiTrash />
+                                                <span
+                                                    className="ms-1"
+                                                    style={{ fontSize: "80%" }}
+                                                >
+                                                    Remove
+                                                </span>
                                             </button>
                                         </div>
                                     </div>
@@ -230,7 +254,7 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                     </button>
                 </div>
             </div>
-            <div className="col-12 col-md-9">
+            <div className="col-12 col-md-8">
                 <div className="row g-2 g-sm-3 g-md-4">
                     {itemData?.map((d, i) => (
                         <div className="col-12 col-sm-6" key={i}>
@@ -245,6 +269,7 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                                         : "border-secondary"
                                 } 
                                 ${d.deleted ? "item_deleted" : ""}`}
+                                data-image={d.image}
                             >
                                 <div className="row">
                                     <div className="col-6">
@@ -355,6 +380,91 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                             </div>
                         </div>
                     ))}
+                </div>
+            </div>
+            <div className="col-12 col-md-2 mb-5">
+                <div className="d-sticky sticky-top" style={{ top: 30 }}>
+                    <h6 className="mb-4">Image + Shape</h6>
+
+                    {itemData?.filter((z) => z.shape !== "" && !z.primary)
+                        .length === 0 && (
+                        <small
+                            className="text-secondary d-block"
+                            style={{ fontSize: "80%" }}
+                        >
+                            Nothing selected yet. This will not include Primary
+                            shapes.
+                        </small>
+                    )}
+
+                    {itemData
+                        ?.filter((z) => z.shape !== "" && !z.primary)
+                        .map((primg, i) => (
+                            <div
+                                className="d-block pb-3 mb-3 border-bottom image-wrapper"
+                                key={i * 5651}
+                            >
+                                <div
+                                    className="imageloading"
+                                    style={{
+                                        backgroundImage: `url(${loadinggif})`,
+                                    }}
+                                ></div>
+                                <div className="row align-items-center">
+                                    <div className="col-3 col-md-5">
+                                        <img
+                                            src={primg.image}
+                                            alt={primg.shape}
+                                            className="img-fluid"
+                                            onClick={() =>
+                                                goToImage(primg.image)
+                                            }
+                                        />
+                                    </div>
+                                    <div className="col-9 col-md-7">
+                                        <small className="text-secondary">
+                                            {primg.shape}
+                                            {primg.primary && (
+                                                <span
+                                                    className="d-block text-info"
+                                                    style={{
+                                                        fontSize: "80%",
+                                                    }}
+                                                >
+                                                    Primary
+                                                </span>
+                                            )}
+                                        </small>
+                                        <button
+                                            className="btn mt-2 btn-sm btn-outline-danger py-1 px-2 m-0 trash-btn d-flex justify-content-center align-items-center"
+                                            onClick={(e) =>
+                                                handleClick(
+                                                    e,
+                                                    primg.shape,
+                                                    primg.image,
+                                                    "update"
+                                                )
+                                            }
+                                        >
+                                            <BiTrash />
+                                            <span
+                                                className="ms-1"
+                                                style={{ fontSize: "80%" }}
+                                            >
+                                                Remove
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+
+                    <button
+                        className="btn btn-outline-secondary btn-sm w-100 mt-5"
+                        onClick={(e) => handleCollapse(e)}
+                    >
+                        Collapse
+                    </button>
                 </div>
             </div>
         </div>

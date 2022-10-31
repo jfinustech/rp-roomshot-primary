@@ -50,6 +50,7 @@
 .image-wrapper {
     cursor: pointer !important;
     position: relative;
+    scroll-margin: 40px;
 }
 /* .image-wrapper:hover:not(.border-success) {
     border-color: rgba(0, 0, 0, 0.1) !important;
