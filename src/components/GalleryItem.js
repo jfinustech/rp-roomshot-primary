@@ -31,6 +31,21 @@ const splitImages = (image) => {
     return result;
 };
 
+const isScrollable = (ele) => {
+    // Compare the height to see if the element has scrollable content
+    const timeout = setTimeout(() => {
+        const selector = ele.current
+            .closest(".leftright-sticky")
+            .querySelector(".scrollable-indicator");
+        if (ele.current.scrollHeight > ele.current.clientHeight) {
+            selector.style.display = "block";
+        } else {
+            selector.style.display = "none";
+        }
+        clearTimeout(timeout);
+    }, 500);
+};
+
 const goToImage = (image) => {
     if (image === "" || !image) return;
     const imageContainer = document.querySelector(`[data-image="${image}"]`);
@@ -45,7 +60,11 @@ function GalleryItem({ item, shapes, handleCollapse }) {
     const [itemData, setItemData] = useState();
     const [shapeList, setShapeList] = useState();
     const [updatedItemData, setUpdatedItemData] = useState([]);
+    const [expand, setExpand] = useState(false);
+    const [expandSide, setExpanSide] = useState("");
     const inputData = useRef();
+
+    const scrollableRef = useRef();
 
     const handleClick = async (
         e,
@@ -153,25 +172,63 @@ function GalleryItem({ item, shapes, handleCollapse }) {
             });
     };
 
+    const handleExpand = (side) => {
+        if (expand && expandSide !== side) {
+            setExpanSide(side);
+        } else {
+            setExpand((prev) => !prev);
+            setExpanSide(side);
+        }
+    };
+
     useEffect(() => {
         const imageInfo = splitImages(item);
         setShapeList(setShapes(shapes));
         setItemData(imageInfo);
+        isScrollable(scrollableRef);
+        window.addEventListener("resize", () => {
+            isScrollable(scrollableRef);
+        });
+
+        return () => {
+            window.removeEventListener("resize", isScrollable(scrollableRef));
+        };
     }, [item, shapes]);
 
     useEffect(() => {
         if (updatedItemData.length > 0) {
             setItemData(updatedItemData);
+            isScrollable(scrollableRef);
         }
     }, [updatedItemData]);
 
     return (
         <div className="row g-md-5 thumb_item_wrapper">
-            <div className="col-12 col-md-2 mb-5">
-                <div className="d-sticky sticky-top" style={{ top: 30 }}>
-                    <h6 className="mb-4">Primary Images</h6>
+            <div
+                className={`col-12 mb-5 ${
+                    expand && expandSide === "left" ? "col-md-6" : "col-md-2"
+                }`}
+            >
+                <div
+                    className="d-sticky sticky-top leftright-sticky"
+                    ref={scrollableRef}
+                    style={{ top: 30 }}
+                >
+                    <h6
+                        className="mb-4 d-flex justify-content-between align-items-center cursor-pointer"
+                        onClick={(e) => handleExpand("left")}
+                    >
+                        Primaries
+                        <small
+                            className="text-secondary scrollable-indicator"
+                            style={{ fontSize: "60%", display: "none" }}
+                        >
+                            SCROLL
+                        </small>
+                    </h6>
 
-                    {itemData?.filter((z) => z.primary).length === 0 && (
+                    {itemData?.filter((z) => z.primary && !z.deleted).length ===
+                        0 && (
                         <small
                             className="text-secondary d-block"
                             style={{ fontSize: "80%" }}
@@ -180,72 +237,79 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                         </small>
                     )}
 
-                    {itemData
-                        ?.filter((z) => z.primary)
-                        .map((primg, i) => (
-                            <div
-                                className="d-block pb-3 mb-3 border-bottom image-wrapper"
-                                key={i * 5651}
-                            >
+                    <div className="row h-100">
+                        {itemData
+                            ?.filter((z) => z.primary && !z.deleted)
+                            .map((primg, i) => (
                                 <div
-                                    className="imageloading"
-                                    style={{
-                                        backgroundImage: `url(${loadinggif})`,
-                                    }}
-                                ></div>
-                                <div className="row align-items-center">
-                                    <div className="col-3 col-md-5">
-                                        <img
-                                            src={primg.image}
-                                            alt={primg.shape}
-                                            className="img-fluid"
-                                            onClick={() =>
-                                                goToImage(primg.image)
-                                            }
-                                        />
-                                    </div>
-                                    <div className="col-9 col-md-7">
-                                        <small className="text-secondary">
-                                            {primg.shape === "" ? (
-                                                <span
-                                                    className="text-danger"
-                                                    style={{
-                                                        backgroundColor:
-                                                            "yellow",
-                                                    }}
-                                                >
-                                                    Shape?
-                                                </span>
-                                            ) : (
-                                                primg.shape
-                                            )}
-                                        </small>
-                                        <div className="d-flex w-100 pt-2">
-                                            <button
-                                                className="btn  btn-sm btn-outline-danger py-1 px-2 m-0 trash-btn d-flex justify-content-center align-items-center"
-                                                onClick={(e) =>
-                                                    handleClick(
-                                                        e,
-                                                        primg.shape,
-                                                        primg.image,
-                                                        "primary"
-                                                    )
-                                                }
-                                            >
-                                                <BiTrash />
-                                                <span
+                                    className={`mb-3 col-12 ${
+                                        expand && expandSide === "left"
+                                            ? "col-md-6"
+                                            : "col-md-12"
+                                    }`}
+                                    key={i * 5651}
+                                >
+                                    <div className="d-block pb-3 border-bottom image-wrapper h-100">
+                                        <div
+                                            className="imageloading"
+                                            style={{
+                                                backgroundImage: `url(${loadinggif})`,
+                                            }}
+                                        ></div>
+                                        <div className="row align-items-end h-100">
+                                            <div className="col-3 col-md-5">
+                                                <img
+                                                    src={primg.image}
+                                                    alt={primg.shape}
+                                                    className="img-fluid"
+                                                    onClick={() =>
+                                                        goToImage(primg.image)
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="col-9 col-md-7">
+                                                <small className="text-secondary">
+                                                    {primg.shape === "" ? (
+                                                        <span
+                                                            className="text-danger"
+                                                            style={{
+                                                                backgroundColor:
+                                                                    "yellow",
+                                                            }}
+                                                        >
+                                                            Shape?
+                                                        </span>
+                                                    ) : (
+                                                        primg.shape
+                                                    )}
+                                                </small>
+                                                <div className="d-flex w-100 pt-2">
+                                                    <button
+                                                        className="btn  btn-sm btn-outline-danger py-1 px-2 m-0 trash-btn d-flex justify-content-center align-items-center"
+                                                        onClick={(e) =>
+                                                            handleClick(
+                                                                e,
+                                                                primg.shape,
+                                                                primg.image,
+                                                                "primary"
+                                                            )
+                                                        }
+                                                    >
+                                                        <BiTrash />
+                                                        {/* <span
                                                     className="ms-1"
                                                     style={{ fontSize: "80%" }}
                                                 >
                                                     Remove
-                                                </span>
-                                            </button>
+                                                </span> */}
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-
+                            ))}
+                    </div>
                     <button
                         className="btn btn-outline-secondary btn-sm w-100 mt-5"
                         onClick={(e) => handleCollapse(e)}
@@ -254,10 +318,13 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                     </button>
                 </div>
             </div>
-            <div className="col-12 col-md-8">
+            <div className={`col-12 ${expand ? "col-md-4" : "col-md-8"}`}>
                 <div className="row g-2 g-sm-3 g-md-4">
                     {itemData?.map((d, i) => (
-                        <div className="col-12 col-sm-6" key={i}>
+                        <div
+                            className={`col-12 ${expand ? "" : "col-sm-6"}`}
+                            key={i}
+                        >
                             <div
                                 className={`image-wrapper w-100 h-100 border rounded-1 border-1 ${
                                     d.shape !== ""
@@ -382,12 +449,32 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                     ))}
                 </div>
             </div>
-            <div className="col-12 col-md-2 mb-5">
-                <div className="d-sticky sticky-top" style={{ top: 30 }}>
-                    <h6 className="mb-4">Image + Shape</h6>
+            <div
+                className={`ol-12 col-md-2 mb-5 ${
+                    expand && expandSide === "right" ? "col-md-6" : "col-md-2"
+                }`}
+            >
+                <div
+                    className="d-sticky sticky-top leftright-sticky"
+                    ref={scrollableRef}
+                    style={{ top: 30 }}
+                >
+                    <h6
+                        className="mb-4 d-flex justify-content-between align-items-center cursor-pointer"
+                        onClick={(e) => handleExpand("right")}
+                    >
+                        Shapes
+                        <small
+                            className="text-secondary scrollable-indicator"
+                            style={{ fontSize: "60%", display: "none" }}
+                        >
+                            SCROLL
+                        </small>
+                    </h6>
 
-                    {itemData?.filter((z) => z.shape !== "" && !z.primary)
-                        .length === 0 && (
+                    {itemData?.filter(
+                        (z) => z.shape !== "" && !z.primary && !z.deleted
+                    ).length === 0 && (
                         <small
                             className="text-secondary d-block"
                             style={{ fontSize: "80%" }}
@@ -397,67 +484,78 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                         </small>
                     )}
 
-                    {itemData
-                        ?.filter((z) => z.shape !== "" && !z.primary)
-                        .map((primg, i) => (
-                            <div
-                                className="d-block pb-3 mb-3 border-bottom image-wrapper"
-                                key={i * 5651}
-                            >
+                    <div className="row h-100">
+                        {itemData
+                            ?.filter(
+                                (z) =>
+                                    z.shape !== "" && !z.primary && !z.deleted
+                            )
+                            .map((primg, i) => (
                                 <div
-                                    className="imageloading"
-                                    style={{
-                                        backgroundImage: `url(${loadinggif})`,
-                                    }}
-                                ></div>
-                                <div className="row align-items-center">
-                                    <div className="col-3 col-md-5">
-                                        <img
-                                            src={primg.image}
-                                            alt={primg.shape}
-                                            className="img-fluid"
-                                            onClick={() =>
-                                                goToImage(primg.image)
-                                            }
-                                        />
-                                    </div>
-                                    <div className="col-9 col-md-7">
-                                        <small className="text-secondary">
-                                            {primg.shape}
-                                            {primg.primary && (
-                                                <span
-                                                    className="d-block text-info"
-                                                    style={{
-                                                        fontSize: "80%",
-                                                    }}
+                                    className={`mb-3 col-12 ${
+                                        expand && expandSide === "right"
+                                            ? "col-md-6"
+                                            : "col-md-12"
+                                    }`}
+                                    key={i * 68984}
+                                >
+                                    <div className="d-block pb-3 border-bottom image-wrapper h-100">
+                                        <div
+                                            className="imageloading"
+                                            style={{
+                                                backgroundImage: `url(${loadinggif})`,
+                                            }}
+                                        ></div>
+                                        <div className="row align-items-end h-100">
+                                            <div className="col-3 col-md-5">
+                                                <img
+                                                    src={primg.image}
+                                                    alt={primg.shape}
+                                                    className="img-fluid"
+                                                    onClick={() =>
+                                                        goToImage(primg.image)
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="col-9 col-md-7">
+                                                <small className="text-secondary">
+                                                    {primg.shape}
+                                                    {primg.primary && (
+                                                        <span
+                                                            className="d-block text-info"
+                                                            style={{
+                                                                fontSize: "80%",
+                                                            }}
+                                                        >
+                                                            Primary
+                                                        </span>
+                                                    )}
+                                                </small>
+                                                <button
+                                                    className="btn mt-2 btn-sm btn-outline-danger py-1 px-2 m-0 trash-btn d-flex justify-content-center align-items-center"
+                                                    onClick={(e) =>
+                                                        handleClick(
+                                                            e,
+                                                            primg.shape,
+                                                            primg.image,
+                                                            "update"
+                                                        )
+                                                    }
                                                 >
-                                                    Primary
-                                                </span>
-                                            )}
-                                        </small>
-                                        <button
-                                            className="btn mt-2 btn-sm btn-outline-danger py-1 px-2 m-0 trash-btn d-flex justify-content-center align-items-center"
-                                            onClick={(e) =>
-                                                handleClick(
-                                                    e,
-                                                    primg.shape,
-                                                    primg.image,
-                                                    "update"
-                                                )
-                                            }
-                                        >
-                                            <BiTrash />
-                                            <span
+                                                    <BiTrash />
+                                                    {/* <span
                                                 className="ms-1"
                                                 style={{ fontSize: "80%" }}
                                             >
                                                 Remove
-                                            </span>
-                                        </button>
+                                            </span> */}
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                    </div>
 
                     <button
                         className="btn btn-outline-secondary btn-sm w-100 mt-5"
