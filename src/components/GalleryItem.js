@@ -229,7 +229,7 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                         className="btn btn-outline-secondary btn-sm w-100 mt-5"
                         onClick={(e) => handleCollapse(e)}
                     >
-                        Collaps
+                        Collapse
                     </button>
                 </div>
             </div>
