@@ -21,7 +21,7 @@ function Gallery({ gallery }) {
 
     if (!collection || collection.lenght === 0) {
         return (
-            <div className="container-fluid container-lg">
+            <div className="container-fluid">
                 <div className="row">
                     <div className="col-12">
                         <div className="alert alert-info">
@@ -41,7 +41,7 @@ function Gallery({ gallery }) {
     }
 
     return (
-        <div className="container-fluid container-lg">
+        <div className="container-fluid">
             <div className="row">
                 {collection.map((item) => (
                     <div

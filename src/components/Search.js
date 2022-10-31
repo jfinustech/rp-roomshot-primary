@@ -8,7 +8,7 @@ function Search({ searchParams, setSearchParams, search, setSearch, loading }) {
     };
 
     return (
-        <div className="container-fluid container-lg mb-4">
+        <div className="container-fluid mb-4">
             <div className="row">
                 <form className="col-12">
                     <div className="input-group">
