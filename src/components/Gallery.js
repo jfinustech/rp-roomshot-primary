@@ -8,15 +8,9 @@ const handleCollapse = (e) => {
     const container = e.currentTarget.closest(".partial-container");
     if (container.classList.contains("do_collapse")) {
         container.classList.remove("do_collapse");
-        e.currentTarget.querySelector(".arrow-up")?.classList.remove("d-none");
-        e.currentTarget.querySelector(".arrow-down")?.classList.add("d-none");
     } else {
         container.classList.add("do_collapse");
         container.scrollIntoView();
-        e.currentTarget.querySelector(".arrow-up")?.classList.add("d-none");
-        e.currentTarget
-            .querySelector(".arrow-down")
-            ?.classList.remove("d-none");
     }
 };
 

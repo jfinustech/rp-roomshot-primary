@@ -178,6 +178,20 @@ input[type="number"]:focus,
     overflow: hidden;
 }
 
+.arrow-down {
+    display: none;
+}
+.do_collapse .arrow-down {
+    display: block !important;
+}
+.arrow-up {
+    display: block;
+}
+
+.do_collapse .arrow-up {
+    display: none !important;
+}
+
 .item_deleted {
     border-color: rgba(0, 0, 0, 0.1) !important;
     background: rgba(0, 0, 0, 0.02) !important;
