@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { BiTrash } from "react-icons/bi";
 import { BiMinus, BiUpArrowAlt } from "react-icons/bi";
+import { MainContext } from "../MainContext";
 
 import axios from "axios";
 import loadinggif from "../assets/loading.gif";
@@ -69,7 +70,7 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
     const [updatedItemData, setUpdatedItemData] = useState([]);
     const [expand, setExpand] = useState(false);
     const [expandSide, setExpanSide] = useState("");
-    const [hideDeleted, setHideDeleted] = useState(false);
+    const { hideDeleted, setHideDeleted } = useContext(MainContext);
 
     const scrollableRef = useRef();
 

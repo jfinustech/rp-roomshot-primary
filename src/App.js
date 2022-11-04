@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Loading from "./components/Loading";
@@ -7,14 +7,20 @@ import Errors from "./components/Errors";
 import Search from "./components/Search";
 import axios from "axios";
 import Pagination from "./components/Pagination";
+import { MainContext } from "./MainContext";
 
 function App() {
     const [loading, setLoading] = useState(false);
     const [gallery, setGallery] = useState();
     const [errors, setErrors] = useState("");
-
+    const [hideDeleted, setHideDeleted] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const [search, setSearch] = useState(searchParams.get("search") ?? "");
+
+    const providerValue = useMemo(
+        () => ({ hideDeleted, setHideDeleted }),
+        [hideDeleted, setHideDeleted]
+    );
 
     const handleQuery = (q) => {
         const new_query = {
@@ -52,7 +58,7 @@ function App() {
     }, [searchParams]);
 
     return (
-        <>
+        <MainContext.Provider value={providerValue}>
             <Navbar />
             <Search
                 searchParams={searchParams}
@@ -75,7 +81,7 @@ function App() {
                     )}
                 </>
             )}
-        </>
+        </MainContext.Provider>
     );
 }
 
