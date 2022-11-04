@@ -33,6 +33,7 @@ const splitImages = (image) => {
 
 const isScrollable = (ele) => {
     // Compare the height to see if the element has scrollable content
+    if (!ele.current) return;
     const timeout = setTimeout(() => {
         const selector = ele.current
             .closest(".leftright-sticky")

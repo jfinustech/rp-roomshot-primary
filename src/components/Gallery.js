@@ -5,11 +5,29 @@ import { BiPlus, BiMinus } from "react-icons/bi";
 
 const handleCollapse = (e) => {
     e.preventDefault();
+    const shift = e.shiftKey;
     const container = e.currentTarget.closest(".partial-container");
+
     if (container.classList.contains("do_collapse")) {
-        container.classList.remove("do_collapse");
+        if (shift) {
+            document
+                .querySelectorAll(".partial-container")
+                .forEach((element) => {
+                    element.classList.remove("do_collapse");
+                });
+        } else {
+            container.classList.remove("do_collapse");
+        }
     } else {
-        container.classList.add("do_collapse");
+        if (shift) {
+            document
+                .querySelectorAll(".partial-container")
+                .forEach((element) => {
+                    element.classList.add("do_collapse");
+                });
+        } else {
+            container.classList.add("do_collapse");
+        }
         container.scrollIntoView();
     }
 };
