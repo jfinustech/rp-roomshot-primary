@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { BiTrash } from "react-icons/bi";
+import { BiMinus, BiUpArrowAlt } from "react-icons/bi";
 
 import axios from "axios";
 import loadinggif from "../assets/loading.gif";
-import { md } from "../aux/modal";
-import placeholder from "../assets/placeholder_lg.jpg";
+
+import GalleryItemEach from "./GalleryItemEach";
 
 const setShapes = (shapestring) => {
     if (!shapestring || shapestring === "") return [];
@@ -57,13 +58,18 @@ const goToImage = (image) => {
     }, 3000);
 };
 
+const handleScrollUp = (e) => {
+    e.preventDefault();
+    e.target.closest(".partial-container").scrollIntoView();
+};
+
 function GalleryItem({ item, shapes, handleCollapse, itemid }) {
     const [itemData, setItemData] = useState();
     const [shapeList, setShapeList] = useState();
     const [updatedItemData, setUpdatedItemData] = useState([]);
     const [expand, setExpand] = useState(false);
     const [expandSide, setExpanSide] = useState("");
-    const inputData = useRef();
+    const [hideDeleted, setHideDeleted] = useState(false);
 
     const scrollableRef = useRef();
 
@@ -183,15 +189,7 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
     };
 
     const handleDeleteToggle = (e) => {
-        const inp = e.currentTarget;
-        const checked = inp.checked;
-        const deleted = inp
-            .closest(".partial-container")
-            .querySelectorAll(".g_item_wrapper_deleted");
-
-        deleted.forEach((element) => {
-            element.style.display = checked ? "none" : "block";
-        });
+        setHideDeleted(!hideDeleted);
     };
 
     useEffect(() => {
@@ -323,144 +321,41 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
                                 </div>
                             ))}
                     </div>
-                    <button
-                        className="btn btn-outline-secondary btn-sm w-100 mt-5"
-                        onClick={(e) => handleCollapse(e)}
-                    >
-                        Collapse
-                    </button>
+                    <div className="d-flex justify-content-center align-items-center gap-2">
+                        <button
+                            className="btn btn-outline-secondary btn-sm w-100 mt-5"
+                            onClick={(e) => handleCollapse(e)}
+                            titl="Collaps"
+                        >
+                            <BiMinus />
+                        </button>
+                        <button
+                            className="btn btn-outline-secondary btn-sm w-100 mt-5"
+                            onClick={(e) => handleScrollUp(e)}
+                            titl="Scroll Up"
+                        >
+                            <BiUpArrowAlt />
+                        </button>
+                    </div>
                 </div>
             </div>
             <div className={`col-12 ${expand ? "col-md-4" : "col-md-8"}`}>
-                <div className="row g-2 g-sm-3 g-md-4">
+                <div
+                    className={`row g-2 g-sm-3 g-md-4 ${
+                        hideDeleted ? "hide_deleted_images" : ""
+                    }`}
+                >
                     {itemData?.map((d, i) => (
-                        <div
-                            className={`${
-                                d.deleted ? "g_item_wrapper_deleted" : ""
-                            } col-12 ${expand ? "" : "col-sm-6"}`}
+                        <GalleryItemEach
                             key={i}
-                        >
-                            <div
-                                className={`image-wrapper w-100 h-100 border rounded-1 border-1 ${
-                                    d.shape !== ""
-                                        ? d.primary
-                                            ? "border-info bg-info-light"
-                                            : "border-success bg-success-light"
-                                        : d.primary
-                                        ? "border-info bg-info-light"
-                                        : "border-secondary"
-                                } 
-                                ${d.deleted ? "item_deleted" : ""}`}
-                                data-image={d.image}
-                            >
-                                <div className="row">
-                                    <div className="col-6">
-                                        <div
-                                            className="bg-white position-relative d-flex justify-content-center align-items-center flex-column rounded p-2 overflow-hidden"
-                                            style={{
-                                                width: "90%",
-                                                height: "90%",
-                                                marginLeft: "5%",
-                                                marginTop: "5%",
-                                            }}
-                                        >
-                                            <div
-                                                className="imageloading"
-                                                style={{
-                                                    backgroundImage: `url(${loadinggif})`,
-                                                }}
-                                            ></div>
-                                            <img
-                                                src={d.image}
-                                                className="img-fluid"
-                                                alt={`${Math.random()}`}
-                                                onClick={() =>
-                                                    md(
-                                                        !d.image
-                                                            ? placeholder
-                                                            : d.image
-                                                    )
-                                                }
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-6">
-                                        <div className="d-flex flex-column gap-2 p-2 gap-md-3 p-md-3 inputwrapper">
-                                            <button
-                                                onClick={(e) => handleClick(e)}
-                                                data-fn="primary"
-                                                className={`btnfunc btn btn-sm ${
-                                                    d.primary
-                                                        ? "btn-info"
-                                                        : "btn-outline-info"
-                                                }`}
-                                                disabled={d.deleted}
-                                            >
-                                                Primary
-                                            </button>
-                                            {shapeList.map((sh) => (
-                                                <div
-                                                    className="w-100"
-                                                    key={sh.id + i}
-                                                >
-                                                    <button
-                                                        disabled={d.deleted}
-                                                        className={`btnfunc btn btn-sm w-100 ${
-                                                            d.shape === sh.shape
-                                                                ? "btn-success"
-                                                                : "btn-outline-secondary"
-                                                        }`}
-                                                        onClick={(e) =>
-                                                            handleClick(e)
-                                                        }
-                                                        data-shape={sh.shape}
-                                                        data-fn="update"
-                                                    >
-                                                        {sh.shape}
-                                                    </button>
-                                                </div>
-                                            ))}
-                                            {d.deleted ? (
-                                                <button
-                                                    onClick={(e) =>
-                                                        handleDelete(e)
-                                                    }
-                                                    className="btn btn-outline-success btn-sm"
-                                                >
-                                                    Revert
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    onClick={(e) =>
-                                                        handleDelete(e)
-                                                    }
-                                                    className="btn btn-outline-danger btn-sm"
-                                                >
-                                                    Delete
-                                                </button>
-                                            )}
-                                            <input
-                                                className="varinput"
-                                                type="hidden"
-                                                ref={inputData}
-                                                value={d.image}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* <div className="border-top p-2 mt-2 w-100 d-flex">
-                                    {d.deleted ? (
-                                        <button className="btn btn-outline-danger btn-sm">
-                                            Reverse
-                                        </button>
-                                    ) : (
-                                        <button className="btn btn-outline-danger btn-sm">
-                                            Delete
-                                        </button>
-                                    )}
-                                </div> */}
-                            </div>
-                        </div>
+                            d={d}
+                            i={i}
+                            expand={expand}
+                            loadinggif={loadinggif}
+                            handleClick={handleClick}
+                            shapeList={shapeList}
+                            handleDelete={handleDelete}
+                        />
                     ))}
                 </div>
             </div>
@@ -498,6 +393,8 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
                                     id={itemid}
                                     type="checkbox"
                                     onChange={(e) => handleDeleteToggle(e)}
+                                    checked={hideDeleted}
+                                    value={hideDeleted}
                                 />
                                 <label
                                     className="tgl-btn"
@@ -507,9 +404,9 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
                             <label
                                 htmlFor={itemid}
                                 className="text-secondary d-inline-block ms-2 user-select-none cursor-pointer"
-                                style={{ fontSize: "80%" }}
+                                style={{ fontSize: "70%" }}
                             >
-                                Deleted
+                                Hide Deleted
                             </label>
                         </div>
                     </div>
@@ -599,12 +496,22 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
                             ))}
                     </div>
 
-                    <button
-                        className="btn btn-outline-secondary btn-sm w-100 mt-5"
-                        onClick={(e) => handleCollapse(e)}
-                    >
-                        Collapse
-                    </button>
+                    <div className="d-flex justify-content-center align-items-center gap-2">
+                        <button
+                            className="btn btn-outline-secondary btn-sm w-100 mt-5"
+                            onClick={(e) => handleCollapse(e)}
+                            titl="Collaps"
+                        >
+                            <BiMinus />
+                        </button>
+                        <button
+                            className="btn btn-outline-secondary btn-sm w-100 mt-5"
+                            onClick={(e) => handleScrollUp(e)}
+                            titl="Scroll Up"
+                        >
+                            <BiUpArrowAlt />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

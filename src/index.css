@@ -283,7 +283,7 @@ input[type="number"]:focus,
 }
 
 :root {
-    --tgl-height: 1.4em;
+    --tgl-height: 1.2em;
     --tgl-padding: 2px;
 }
 
@@ -332,3 +332,7 @@ input[type="number"]:focus,
     background: #0d6efd;
 }
 /* TOGGLE END */
+
+.hide_deleted_images .g_item_wrapper_deleted {
+    display: none;
+}
