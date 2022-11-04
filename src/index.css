@@ -248,3 +248,87 @@ input[type="number"]:focus,
 .cursor-pointer {
     cursor: pointer !important;
 }
+
+/* TOGGLE BEGIN */
+
+.tgl {
+    display: none;
+}
+.tgl,
+.tgl:after,
+.tgl:before,
+.tgl *,
+.tgl *:after,
+.tgl *:before,
+.tgl + .tgl-btn {
+    box-sizing: border-box;
+}
+.tgl::-moz-selection,
+.tgl:after::-moz-selection,
+.tgl:before::-moz-selection,
+.tgl *::-moz-selection,
+.tgl *:after::-moz-selection,
+.tgl *:before::-moz-selection,
+.tgl + .tgl-btn::-moz-selection {
+    background: none;
+}
+.tgl::selection,
+.tgl:after::selection,
+.tgl:before::selection,
+.tgl *::selection,
+.tgl *:after::selection,
+.tgl *:before::selection,
+.tgl + .tgl-btn::selection {
+    background: none;
+}
+
+:root {
+    --tgl-height: 1.4em;
+    --tgl-padding: 2px;
+}
+
+.tgl + .tgl-btn {
+    outline: 0;
+    display: block;
+    width: calc(var(--tgl-height) * 2);
+    height: var(--tgl-height);
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.tgl + .tgl-btn:after,
+.tgl + .tgl-btn:before {
+    position: relative;
+    display: block;
+    content: "";
+}
+.tgl + .tgl-btn:after {
+    left: 0;
+}
+.tgl + .tgl-btn:before {
+    display: none;
+}
+.tgl:checked + .tgl-btn:after {
+    left: calc(50% + var(--tgl-padding));
+}
+
+.tgl-light + .tgl-btn {
+    background: #f0f0f0;
+    border-radius: var(--tgl-height);
+    padding: var(--tgl-padding);
+    transition: all 0.4s ease;
+}
+.tgl-light + .tgl-btn:after {
+    width: calc(var(--tgl-height) - calc(var(--tgl-padding) * 2));
+    height: calc(var(--tgl-height) - calc(var(--tgl-padding) * 2));
+    border-radius: 50%;
+    background: white;
+    transition: all 0.2s ease;
+}
+.tgl-light:checked + .tgl-btn {
+    background: #0d6efd;
+}
+/* TOGGLE END */

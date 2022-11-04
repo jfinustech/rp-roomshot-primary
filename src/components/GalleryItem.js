@@ -57,7 +57,7 @@ const goToImage = (image) => {
     }, 3000);
 };
 
-function GalleryItem({ item, shapes, handleCollapse }) {
+function GalleryItem({ item, shapes, handleCollapse, itemid }) {
     const [itemData, setItemData] = useState();
     const [shapeList, setShapeList] = useState();
     const [updatedItemData, setUpdatedItemData] = useState([]);
@@ -180,6 +180,18 @@ function GalleryItem({ item, shapes, handleCollapse }) {
             setExpand((prev) => !prev);
             setExpanSide(side);
         }
+    };
+
+    const handleDeleteToggle = (e) => {
+        const inp = e.currentTarget;
+        const checked = inp.checked;
+        const deleted = inp
+            .closest(".partial-container")
+            .querySelectorAll(".g_item_wrapper_deleted");
+
+        deleted.forEach((element) => {
+            element.style.display = checked ? "none" : "block";
+        });
     };
 
     useEffect(() => {
@@ -323,7 +335,9 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                 <div className="row g-2 g-sm-3 g-md-4">
                     {itemData?.map((d, i) => (
                         <div
-                            className={`col-12 ${expand ? "" : "col-sm-6"}`}
+                            className={`${
+                                d.deleted ? "g_item_wrapper_deleted" : ""
+                            } col-12 ${expand ? "" : "col-sm-6"}`}
                             key={i}
                         >
                             <div
@@ -472,6 +486,33 @@ function GalleryItem({ item, shapes, handleCollapse }) {
                             SCROLL
                         </small>
                     </h6>
+
+                    <div className="d-block w-100 mb-3">
+                        <div
+                            className="d-flex justify-content-start align-items-center border border-start-0 border-end-0 p-2 w-100"
+                            title="Toggle deleted items visibility"
+                        >
+                            <span>
+                                <input
+                                    className="tgl tgl-light"
+                                    id={itemid}
+                                    type="checkbox"
+                                    onChange={(e) => handleDeleteToggle(e)}
+                                />
+                                <label
+                                    className="tgl-btn"
+                                    htmlFor={itemid}
+                                ></label>
+                            </span>
+                            <label
+                                htmlFor={itemid}
+                                className="text-secondary d-inline-block ms-2 user-select-none cursor-pointer"
+                                style={{ fontSize: "80%" }}
+                            >
+                                Deleted
+                            </label>
+                        </div>
+                    </div>
 
                     {itemData?.filter(
                         (z) => z.shape !== "" && !z.primary && !z.deleted

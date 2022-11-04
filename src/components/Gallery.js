@@ -114,6 +114,7 @@ function Gallery({ gallery }) {
                                 item={item.images}
                                 shapes={item.shapes}
                                 handleCollapse={handleCollapse}
+                                itemid={item.key}
                             />
                         </div>
                     </div>
