@@ -354,3 +354,7 @@ input[type="number"]:focus,
 .hide_deleted_images .g_item_wrapper_deleted {
     display: none;
 }
+
+.shadow-pop {
+    box-shadow: 0 0.5rem 1rem rgb(0 64 255 / 63%) !important;
+}

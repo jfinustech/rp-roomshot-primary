@@ -52,10 +52,10 @@ const isScrollable = (ele) => {
 const goToImage = (image) => {
     if (image === "" || !image) return;
     const imageContainer = document.querySelector(`[data-image="${image}"]`);
-    imageContainer.classList.add("shadow");
+    imageContainer.classList.add("shadow-pop");
     imageContainer.scrollIntoView();
     setTimeout(() => {
-        imageContainer.classList.remove("shadow");
+        imageContainer.classList.remove("shadow-pop");
     }, 3000);
 };
 
