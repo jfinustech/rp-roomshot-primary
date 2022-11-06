@@ -209,6 +209,24 @@ input[type="number"]:focus,
     overflow: hidden;
 }
 
+.thumb_item_wrapper .loading_cover {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.7);
+    position: fixed;
+    z-index: 99999;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+}
+.thumb_item_wrapper .loading_cover .lds-ripple {
+    position: absolute;
+    left: 50%;
+    top: 10%;
+}
 .arrow-down {
     display: none;
 }

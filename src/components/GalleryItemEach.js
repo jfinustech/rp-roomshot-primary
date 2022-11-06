@@ -20,13 +20,12 @@ function GalleryItemEach({
                 className={`image-wrapper w-100 h-100 border rounded-1 border-1 ${
                     d.shape !== ""
                         ? d.primary
-                            ? "border-info bg-info-light"
-                            : "border-success bg-success-light"
+                            ? "border-info bg-info-light g_selected"
+                            : "border-success bg-success-light g_selected"
                         : d.primary
-                        ? "border-info bg-info-light"
+                        ? "border-info bg-info-light g_selected"
                         : "border-secondary"
-                } 
-                                ${d.deleted ? "item_deleted" : ""}`}
+                } ${d.deleted ? "item_deleted" : ""}`}
                 data-image={d.image}
             >
                 <div className="row">
@@ -95,7 +94,8 @@ function GalleryItemEach({
                             ) : (
                                 <button
                                     onClick={(e) => handleDelete(e)}
-                                    className="btn btn-outline-danger btn-sm"
+                                    className="btn btn-outline-danger btn-sm g_delete_btn"
+                                    data-image={d.image}
                                 >
                                     Delete
                                 </button>

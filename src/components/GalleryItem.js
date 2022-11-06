@@ -135,19 +135,28 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
             });
     };
 
-    const handleDelete = async (e) => {
-        const imageValue = e.target
-            .closest(".inputwrapper")
-            .querySelector("input.varinput").value;
-
+    const ax_delete = (imageValue) => {
         const url = "https://sandbx.rugpal.com/office/jay/g.asp";
 
-        await axios
-            .get(url, {
-                params: {
-                    img: encodeURIComponent(imageValue),
-                },
-            })
+        if (imageValue === "") {
+            return new Promise((reject) => reject("Invlaid data provided"));
+        }
+        return axios.get(url, {
+            params: {
+                img: encodeURIComponent(imageValue),
+            },
+        });
+    };
+
+    const handleDelete = async (e, imagelink = "") => {
+        const imageValue =
+            imagelink === ""
+                ? e.target
+                      .closest(".inputwrapper")
+                      .querySelector("input.varinput").value
+                : imagelink;
+
+        await ax_delete(imageValue)
             .then((d) => {
                 switch (d.data.message) {
                     case "Invalid inquery":
@@ -157,22 +166,17 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
                         alert(d.data.message);
                         break;
                     default:
-                        const newImageArray = [];
-                        itemData.map((img) => {
-                            if (img.image === d.data.image) {
-                                return newImageArray.push({
-                                    image: d.data.image,
-                                    primary:
-                                        d.data.primary === "0" ? false : true,
-                                    shape: d.data.shape,
+                        const newData = itemData.map((img) => {
+                            if (img.image === imageValue) {
+                                return {
+                                    ...img,
                                     deleted:
                                         d.data.deleted === "0" ? true : false,
-                                });
+                                };
                             }
-                            return newImageArray.push(img);
+                            return img;
                         });
-
-                        setUpdatedItemData(newImageArray);
+                        setUpdatedItemData(newData);
                 }
             })
             .catch((er) => {
@@ -191,6 +195,49 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
 
     const handleDeleteToggle = (e) => {
         setHideDeleted(!hideDeleted);
+    };
+
+    const handleDeleteAll = async (e) => {
+        e.preventDefault();
+        const container = e.target.closest(".thumb_item_wrapper");
+        const btns = container.querySelectorAll(".g_delete_btn");
+        const loading = document.createElement("div");
+        loading.classList.add("loading_cover");
+        loading.innerHTML =
+            '<div class="lds-ripple"><div></div><div></div></div>';
+
+        container.appendChild(loading);
+        let newData = updatedItemData.length > 0 ? updatedItemData : itemData;
+
+        for (let [index, btn] of btns.entries()) {
+            if (!btn.closest(".g_selected")) {
+                const link = btn.dataset.image;
+
+                await ax_delete(link).then((d) => {
+                    switch (d.data.message) {
+                        case "Invalid inquery":
+                            console.error(d.data.message);
+                            break;
+                        case "update failed":
+                            console.error(d.data.message);
+                            break;
+                        default:
+                            newData.find((f) => {
+                                if (f.image === link) {
+                                    return (f.deleted =
+                                        d.data.deleted === "0" ? true : false);
+                                }
+                                return false;
+                            });
+                    }
+                });
+            }
+            if (index >= btns.length - 1) {
+                loading.remove();
+            }
+        }
+
+        setUpdatedItemData(newData);
     };
 
     useEffect(() => {
@@ -341,6 +388,25 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
                 </div>
             </div>
             <div className={`col-12 ${expand ? "col-md-4" : "col-md-8"}`}>
+                <div className="d-block mb-5">
+                    <button
+                        className="btn btn-outline-danger btn-sm px-4"
+                        onClick={(e) => handleDeleteAll(e)}
+                    >
+                        Delete All Non-Selected Images
+                    </button>
+                    <small
+                        className="d-block text-secondary mt-2"
+                        style={{ fontSize: "80%" }}
+                    >
+                        <BiUpArrowAlt
+                            style={{ fontSize: 17 }}
+                            className="text-danger"
+                        />
+                        This will delete all images that are not assigned as
+                        primary or specific shape
+                    </small>
+                </div>
                 <div
                     className={`row g-2 g-sm-3 g-md-4 ${
                         hideDeleted ? "hide_deleted_images" : ""
