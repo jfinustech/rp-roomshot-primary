@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/rp-roomshot-primary/static/css/main.13187ccb.css",
-    "main.js": "/rp-roomshot-primary/static/js/main.c690193b.js",
+    "main.css": "/rp-roomshot-primary/static/css/main.866c6916.css",
+    "main.js": "/rp-roomshot-primary/static/js/main.1b7df8ee.js",
     "static/media/placeholder_lg.jpg": "/rp-roomshot-primary/static/media/placeholder_lg.cc9128cbff48b72626a9.jpg",
     "static/media/loading.gif": "/rp-roomshot-primary/static/media/loading.a1a996746e5e48352c81.gif",
     "index.html": "/rp-roomshot-primary/index.html",
-    "main.13187ccb.css.map": "/rp-roomshot-primary/static/css/main.13187ccb.css.map",
-    "main.c690193b.js.map": "/rp-roomshot-primary/static/js/main.c690193b.js.map"
+    "main.866c6916.css.map": "/rp-roomshot-primary/static/css/main.866c6916.css.map",
+    "main.1b7df8ee.js.map": "/rp-roomshot-primary/static/js/main.1b7df8ee.js.map"
   },
   "entrypoints": [
-    "static/css/main.13187ccb.css",
-    "static/js/main.c690193b.js"
+    "static/css/main.866c6916.css",
+    "static/js/main.1b7df8ee.js"
   ]
 }
