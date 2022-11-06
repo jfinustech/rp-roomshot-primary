@@ -51,10 +51,18 @@ const isScrollable = (ele) => {
 
 const goToImage = (image) => {
     if (image === "" || !image) return;
+    const currentPop = document.querySelector(".shadow-pop");
+    let timeout = null;
+    if (currentPop) {
+        currentPop.classList.remove("shadow-pop");
+        if (timeout && timeout !== null) {
+            clearTimeout(timeout);
+        }
+    }
     const imageContainer = document.querySelector(`[data-image="${image}"]`);
     imageContainer.classList.add("shadow-pop");
     imageContainer.scrollIntoView();
-    setTimeout(() => {
+    timeout = setTimeout(() => {
         imageContainer.classList.remove("shadow-pop");
     }, 3000);
 };
