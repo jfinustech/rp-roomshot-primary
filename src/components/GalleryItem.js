@@ -1,11 +1,8 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { BiTrash } from "react-icons/bi";
-import { BiMinus, BiUpArrowAlt } from "react-icons/bi";
-import { MainContext } from "../MainContext";
-
 import axios from "axios";
+import { BiTrash, BiMinus, BiUpArrowAlt } from "react-icons/bi";
+import { MainContext } from "../MainContext";
 import loadinggif from "../assets/loading.gif";
-
 import GalleryItemEach from "./GalleryItemEach";
 
 const setShapes = (shapestring) => {
@@ -245,7 +242,7 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
             }
         }
 
-        setUpdatedItemData(newData);
+        setUpdatedItemData({ ...[newData] });
     };
 
     useEffect(() => {
