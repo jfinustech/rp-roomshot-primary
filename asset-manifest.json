@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/rp-roomshot-primary/static/css/main.866c6916.css",
-    "main.js": "/rp-roomshot-primary/static/js/main.fdb08e8e.js",
+    "main.js": "/rp-roomshot-primary/static/js/main.9604be97.js",
     "static/media/placeholder_lg.jpg": "/rp-roomshot-primary/static/media/placeholder_lg.cc9128cbff48b72626a9.jpg",
     "static/media/loading.gif": "/rp-roomshot-primary/static/media/loading.a1a996746e5e48352c81.gif",
     "index.html": "/rp-roomshot-primary/index.html",
     "main.866c6916.css.map": "/rp-roomshot-primary/static/css/main.866c6916.css.map",
-    "main.fdb08e8e.js.map": "/rp-roomshot-primary/static/js/main.fdb08e8e.js.map"
+    "main.9604be97.js.map": "/rp-roomshot-primary/static/js/main.9604be97.js.map"
   },
   "entrypoints": [
     "static/css/main.866c6916.css",
-    "static/js/main.fdb08e8e.js"
+    "static/js/main.9604be97.js"
   ]
 }
