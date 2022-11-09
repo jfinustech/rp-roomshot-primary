@@ -76,6 +76,7 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
     const [expand, setExpand] = useState(false);
     const [expandSide, setExpanSide] = useState("");
     const { hideDeleted, setHideDeleted } = useContext(MainContext);
+    const { hideAssigned, setHideAssigned } = useContext(MainContext);
 
     const scrollableRef = useRef();
 
@@ -201,6 +202,11 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
     const handleDeleteToggle = (e) => {
         localStorage.setItem("hidedeleted", !hideDeleted);
         setHideDeleted(!hideDeleted);
+    };
+
+    const handleAssignedToggle = (e) => {
+        localStorage.setItem("hideassigned", !hideAssigned);
+        setHideAssigned(!hideAssigned);
     };
 
     const handleDeleteAll = async (e) => {
@@ -416,7 +422,7 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
                 <div
                     className={`row g-2 g-sm-3 g-md-4 ${
                         hideDeleted ? "hide_deleted_images" : ""
-                    }`}
+                    } ${hideAssigned ? "hide_assigned_images" : ""}`}
                 >
                     {itemData?.map((d, i) => (
                         <GalleryItemEach
@@ -455,9 +461,9 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
                         </small>
                     </h6>
 
-                    <div className="d-block w-100 mb-3">
+                    <div className="d-block w-100">
                         <div
-                            className="d-flex justify-content-start align-items-center border border-start-0 border-end-0 p-2 w-100"
+                            className="d-flex justify-content-start align-items-center border border-start-0 border-bottom-0 border-end-0 p-2 w-100"
                             title="Toggle deleted items visibility"
                         >
                             <span>
@@ -480,6 +486,34 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
                                 style={{ fontSize: "70%" }}
                             >
                                 Hide Deleted
+                            </label>
+                        </div>
+                    </div>
+                    <div className="d-block w-100 mb-4">
+                        <div
+                            className="d-flex justify-content-start align-items-center border border-start-0 border-end-0 p-2 w-100"
+                            title="Toggle deleted items visibility"
+                        >
+                            <span>
+                                <input
+                                    className="tgl tgl-light"
+                                    id={itemid + "d"}
+                                    type="checkbox"
+                                    onChange={(e) => handleAssignedToggle(e)}
+                                    checked={hideAssigned}
+                                    value={hideAssigned}
+                                />
+                                <label
+                                    className="tgl-btn"
+                                    htmlFor={itemid + "d"}
+                                ></label>
+                            </span>
+                            <label
+                                htmlFor={itemid + "d"}
+                                className="text-secondary d-inline-block ms-2 user-select-none cursor-pointer"
+                                style={{ fontSize: "70%" }}
+                            >
+                                Hide Assigned
                             </label>
                         </div>
                     </div>

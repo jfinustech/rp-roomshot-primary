@@ -14,12 +14,13 @@ function App() {
     const [gallery, setGallery] = useState();
     const [errors, setErrors] = useState("");
     const [hideDeleted, setHideDeleted] = useState(false);
+    const [hideAssigned, setHideAssigned] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const [search, setSearch] = useState(searchParams.get("search") ?? "");
 
     const providerValue = useMemo(
-        () => ({ hideDeleted, setHideDeleted }),
-        [hideDeleted, setHideDeleted]
+        () => ({ hideDeleted, setHideDeleted, hideAssigned, setHideAssigned }),
+        [hideDeleted, setHideDeleted, hideAssigned, setHideAssigned]
     );
 
     const handleQuery = (q) => {
@@ -57,6 +58,10 @@ function App() {
         const loacl_show_deleted = localStorage.getItem("hidedeleted");
         if (loacl_show_deleted)
             setHideDeleted(loacl_show_deleted === "true" ? true : false);
+
+        const loacl_show_assigned = localStorage.getItem("hidedeleted");
+        if (loacl_show_assigned)
+            setHideAssigned(loacl_show_assigned === "true" ? true : false);
 
         setSearch(searchParams.get("search") ?? "");
     }, [searchParams]);

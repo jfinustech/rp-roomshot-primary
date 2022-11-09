@@ -14,7 +14,7 @@ function GalleryItemEach({
         <div
             className={`${d.deleted ? "g_item_wrapper_deleted" : ""} col-12 ${
                 expand ? "" : "col-sm-6"
-            }`}
+            } ${d.shape !== "" ? "g_assigned_shape" : ""}`}
         >
             <div
                 className={`image-wrapper w-100 h-100 border rounded-1 border-1 ${
