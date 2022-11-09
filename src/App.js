@@ -59,7 +59,7 @@ function App() {
         if (loacl_show_deleted)
             setHideDeleted(loacl_show_deleted === "true" ? true : false);
 
-        const loacl_show_assigned = localStorage.getItem("hidedeleted");
+        const loacl_show_assigned = localStorage.getItem("hideassigned");
         if (loacl_show_assigned)
             setHideAssigned(loacl_show_assigned === "true" ? true : false);
 
