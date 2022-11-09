@@ -54,6 +54,10 @@ function App() {
 
         fetch();
 
+        const loacl_show_deleted = localStorage.getItem("hidedeleted");
+        if (loacl_show_deleted)
+            setHideDeleted(loacl_show_deleted === "true" ? true : false);
+
         setSearch(searchParams.get("search") ?? "");
     }, [searchParams]);
 

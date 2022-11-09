@@ -199,6 +199,7 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
     };
 
     const handleDeleteToggle = (e) => {
+        localStorage.setItem("hidedeleted", !hideDeleted);
         setHideDeleted(!hideDeleted);
     };
 
