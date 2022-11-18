@@ -8,19 +8,42 @@ import Search from "./components/Search";
 import axios from "axios";
 import Pagination from "./components/Pagination";
 import { MainContext } from "./MainContext";
+import Login from "./Login";
 
 function App() {
     const [loading, setLoading] = useState(false);
     const [gallery, setGallery] = useState();
     const [errors, setErrors] = useState("");
-    const [hideDeleted, setHideDeleted] = useState(false);
-    const [hideAssigned, setHideAssigned] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const [search, setSearch] = useState(searchParams.get("search") ?? "");
 
+    const [hideDeleted, setHideDeleted] = useState(false);
+    const [hideAssigned, setHideAssigned] = useState(false);
+    const [userLoggedIn, setUserLoggedIn] = useState(
+        localStorage.getItem("auth") ? true : false
+    );
+    const [user, setUser] = useState({});
     const providerValue = useMemo(
-        () => ({ hideDeleted, setHideDeleted, hideAssigned, setHideAssigned }),
-        [hideDeleted, setHideDeleted, hideAssigned, setHideAssigned]
+        () => ({
+            hideDeleted,
+            setHideDeleted,
+            hideAssigned,
+            setHideAssigned,
+            userLoggedIn,
+            setUserLoggedIn,
+            user,
+            setUser,
+        }),
+        [
+            hideDeleted,
+            setHideDeleted,
+            hideAssigned,
+            setHideAssigned,
+            userLoggedIn,
+            setUserLoggedIn,
+            user,
+            setUser,
+        ]
     );
 
     const handleQuery = (q) => {
@@ -68,28 +91,41 @@ function App() {
 
     return (
         <MainContext.Provider value={providerValue}>
-            <Navbar />
-            <Search
-                searchParams={searchParams}
-                setSearchParams={setSearchParams}
-                search={search}
-                setSearch={setSearch}
-                loading={loading}
-            />
-            <Loading loading={loading} />
-            {!loading && errors !== "" && <Errors errors={errors} />}
-            {!loading && errors === "" && (
+            {userLoggedIn && (
                 <>
-                    <Gallery gallery={gallery} />
-                    {gallery && gallery.length > 0 && (
-                        <Pagination
-                            current_page={searchParams.get("page") ?? 1}
-                            maxpage={gallery ? gallery[0].total_page : 1}
-                            handleQuery={handleQuery}
-                        />
+                    <Navbar
+                        setUserLoggedIn={setUserLoggedIn}
+                        loading={loading}
+                    />
+                    <Search
+                        searchParams={searchParams}
+                        setSearchParams={setSearchParams}
+                        search={search}
+                        setSearch={setSearch}
+                        loading={loading}
+                    />
+                    <Loading loading={loading} />
+                    {!loading && userLoggedIn && errors !== "" && (
+                        <Errors errors={errors} />
+                    )}
+                    {!loading && userLoggedIn && errors === "" && (
+                        <>
+                            <Gallery gallery={gallery} />
+                            {gallery && gallery.length > 0 && (
+                                <Pagination
+                                    current_page={searchParams.get("page") ?? 1}
+                                    maxpage={
+                                        gallery ? gallery[0].total_page : 1
+                                    }
+                                    handleQuery={handleQuery}
+                                />
+                            )}
+                        </>
                     )}
                 </>
             )}
+
+            {!userLoggedIn && <Login setUserLoggedIn={setUserLoggedIn} />}
         </MainContext.Provider>
     );
 }

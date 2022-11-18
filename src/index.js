@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Test from "./Test";
+import Login from "./Login";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -11,6 +12,7 @@ root.render(
         <Routes>
             <Route path="/rp-roomshot-primary" element={<App />} />
             <Route path="/rp-roomshot-primary/test" element={<Test />} />
+            <Route path="/rp-roomshot-primary/login" element={<Login />} />
         </Routes>
     </BrowserRouter>
 );

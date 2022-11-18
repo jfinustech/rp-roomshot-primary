@@ -4,6 +4,7 @@ import { BiTrash, BiMinus, BiUpArrowAlt } from "react-icons/bi";
 import { MainContext } from "../MainContext";
 import loadinggif from "../assets/loading.gif";
 import GalleryItemEach from "./GalleryItemEach";
+import { useNavigate } from "react-router-dom";
 
 const setShapes = (shapestring) => {
     if (!shapestring || shapestring === "") return [];
@@ -77,6 +78,7 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
     const [expandSide, setExpanSide] = useState("");
     const { hideDeleted, setHideDeleted } = useContext(MainContext);
     const { hideAssigned, setHideAssigned } = useContext(MainContext);
+    const navigate = useNavigate();
 
     const scrollableRef = useRef();
 
@@ -211,6 +213,7 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
 
     const handleDeleteAll = async (e) => {
         e.preventDefault();
+
         const container = e.target.closest(".thumb_item_wrapper");
         const btns = container.querySelectorAll(".g_delete_btn");
         const loading = document.createElement("div");
@@ -253,6 +256,10 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
     };
 
     useEffect(() => {
+        if (!localStorage.getItem("auth")) {
+            navigate(0);
+        }
+
         const imageInfo = splitImages(item);
         setShapeList(setShapes(shapes));
         setItemData(imageInfo);
@@ -264,7 +271,7 @@ function GalleryItem({ item, shapes, handleCollapse, itemid }) {
         return () => {
             window.removeEventListener("resize", isScrollable(scrollableRef));
         };
-    }, [item, shapes]);
+    }, [item, shapes, navigate]);
 
     useEffect(() => {
         if (updatedItemData.length > 0) {
